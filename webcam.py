@@ -1,6 +1,7 @@
 import cv2
 import datetime
 import sys
+import math
 
 cascPath = "haarcascade_frontalface_default.xml"
 faceCascade = cv2.CascadeClassifier(cascPath)
@@ -8,9 +9,20 @@ faceCascade = cv2.CascadeClassifier(cascPath)
 video_file = sys.argv[1]
 video_capture = cv2.VideoCapture(video_file)
 
+video_timestamp_s = 25
+
 # Get frame rate
 fps = video_capture.get(cv2.cv.CV_CAP_PROP_FPS)
 print("Frames per second: {0}".format(fps))
+
+frame_start_position = math.floor(video_timestamp_s * fps)
+print("Frame start position: {0}".format(frame_start_position))
+
+frames_count = video_capture.get(cv2.cv.CV_CAP_PROP_FRAME_COUNT)
+print("Total frames count: {0}".format(frames_count))
+
+# Set frame position
+video_capture.set(cv2.cv.CV_CAP_PROP_POS_FRAMES, frame_start_position)
 
 while True:
     # Capture frame-by-frame
