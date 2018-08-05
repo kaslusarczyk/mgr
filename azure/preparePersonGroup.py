@@ -22,7 +22,7 @@ for person_name in people_name_collection:
         response = conn.getresponse()
         time.sleep(3)
         data = response.read()
-        print('%s created with response' % person_name + data)
+        print('%s created with response ' % person_name + data)
         data_dict = json.loads(data)
         person_id = data_dict['personId']
         conn.close()
