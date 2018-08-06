@@ -1,4 +1,4 @@
-import httplib, json, os, time
+import httplib, json, os
 
 subscription_key = os.environ['AZURE_SUBSCRIPTION_KEY']
 headers = {
@@ -7,8 +7,8 @@ headers = {
     'Ocp-Apim-Subscription-Key': subscription_key,
 }
 
-person_group_id = 'test4'
-location = 'westcentralus'
+person_group_id = 'yt-faces-30-5'
+location = 'uksouth'
 
 people_name_collection = os.listdir(os.environ['FACES_COLLECTION_PATH'])
 
@@ -18,9 +18,7 @@ for person_name in people_name_collection:
         conn = httplib.HTTPSConnection(location + '.api.cognitive.microsoft.com')
         conn.request("POST", "/face/v1.0/persongroups/" + person_group_id + "/persons", "{'name': '%s'}" % person_name,
                      headers)
-        time.sleep(3)
         response = conn.getresponse()
-        time.sleep(3)
         data = response.read()
         print('%s created with response ' % person_name + data)
         data_dict = json.loads(data)
@@ -42,3 +40,5 @@ for person_name in people_name_collection:
             conn.close()
         except Exception as e:
             print("[Errno {0}] {1}".format(e.errno, e.strerror))
+
+    print('')
