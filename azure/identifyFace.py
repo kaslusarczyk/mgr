@@ -20,6 +20,7 @@ params = urllib.urlencode({
     'returnFaceId': 'true'
 })
 
+print('person_frame candidate_person_name candidate_confidence')
 for person_frame in yt_movies_person_frames:
     # print('frame no ' + person_frame)
 
@@ -45,15 +46,21 @@ for person_frame in yt_movies_person_frames:
         conn.request("POST", "/face/v1.0/identify", "{"
                                                     "'personGroupId': '%s', "
                                                     "'faceIds': ['%s'], "
+                                                    "'maxNumOfCandidatesReturned': 1, "
+                                                    "'confidenceThreshold': 0.1, "
                                                     "}" % (person_group_id, face_id),
                      headers)
         response = conn.getresponse()
         data = response.read()
         # print('identify face response data ' + data)
         data_dict = json.loads(data)
-        for candidate in range(0, len(data_dict[0]['candidates'])):
-            candidate_person_id = data_dict[0]['candidates'][candidate]['personId']
-            candidate_confidence = data_dict[0]['candidates'][candidate]['confidence']
+
+        if len(data_dict[0]['candidates']) == 0:
+            print(person_frame + ' no one identified')
+        else:
+            # get top 1 candidate
+            candidate_person_id = data_dict[0]['candidates'][0]['personId']
+            candidate_confidence = data_dict[0]['candidates'][0]['confidence']
 
             # get person name
             conn = httplib.HTTPSConnection(location + '.api.cognitive.microsoft.com')
@@ -63,9 +70,8 @@ for person_frame in yt_movies_person_frames:
             data = response.read()
             data_dict = json.loads(data)
             candidate_person_name = data_dict['name']
-            # print('candidate no ' + str(candidate) + ' was identified as ' + candidate_person_name
-            #       + ' with confidence ' + str(candidate_confidence))
-            print(person_frame + ' ' + str(candidate) + ' ' + candidate_person_name + ' ' + str(candidate_confidence))
+            # print('candidate was identified as ' + candidate_person_name + ' with confidence ' + str(candidate_confidence))
+            print(person_frame + ' ' + candidate_person_name + ' ' + str(candidate_confidence))
         conn.close()
     except Exception as e:
         print("[Errno {0}] {1}".format(e.errno, e.strerror))
