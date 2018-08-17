@@ -25,6 +25,8 @@ while finished == False:
                 print(str(personMatch['Timestamp']) + ' '
                       + faceMatch['Face']['ExternalImageId'] + ' '
                       + str(faceMatch['Similarity']))
+        else:
+            print(str(personMatch['Timestamp']))
     if 'NextToken' in response:
         paginationToken = response['NextToken']
     else:
