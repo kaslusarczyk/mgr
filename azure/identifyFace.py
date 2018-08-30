@@ -12,7 +12,11 @@ person_group_id = 'yt-faces-30-5'
 container_name = 'yt-movies-frames'
 person_to_identify_name = sys.argv[1]
 
-yt_movies_person_frames_path = os.environ['YT_MOVIES_FRAMES_PATH'] + '/' + person_to_identify_name
+# # for linux
+# yt_movies_person_frames_path = os.environ['YT_MOVIES_FRAMES_PATH'] + '/' + person_to_identify_name
+# for windows
+yt_movies_person_frames_path = os.environ['YT_MOVIES_FRAMES_PATH'] + '\\' + person_to_identify_name
+
 yt_movies_person_frames = os.listdir(yt_movies_person_frames_path)
 
 params = urllib.urlencode({
@@ -36,6 +40,8 @@ for person_frame in yt_movies_person_frames:
         # print('%s detected with response ' % person_to_identify_name + data)
         data_dict = json.loads(data)
         face_id = data_dict[0]['faceId']
+        if len(data_dict) > 1:
+            face_id_1 = data_dict[1]['faceId']
         conn.close()
     except Exception as e:
         print("[Errno {0}] {1}".format(e.errno, e.strerror))
